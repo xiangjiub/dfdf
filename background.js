@@ -1,3 +1,22 @@
+chrome.declarativeNetRequest.updateDynamicRules({
+  addRules: [{
+    'id': 1001,
+    'priority': 1,
+    'action': {
+      'type': 'allow',
+    },
+    'condition': {
+      isUrlFilterCaseSensitive:false,
+      'urlFilter': '*',
+      // "regexFilter": "^https://www\\.",
+      'resourceTypes': [
+        'csp_report', 'font', 'image', 'main_frame', 'media', 'object', 'other', 'ping', 'script',
+        'stylesheet', 'sub_frame', 'webbundle', 'websocket', 'webtransport', 'xmlhttprequest'
+      ]
+    }
+  }],
+  removeRuleIds: [1001]
+})
 // // 监听前台文件发送的消息
 // chrome.runtime.onMessage.addListener(function (result) {
 //   // action需要与前台文件对应
@@ -33,22 +52,44 @@
 //   }
 // });
 
-chrome.webRequest.onBeforeSendHeaders.addListener(
+// chrome.webRequest.onBeforeSendHeaders.addListener(
+//   function (details) {
+//     const requestHeaders = details.requestHeaders;
+//     console.log(requestHeaders);
+//     // for (let i = 0; i < requestHeaders.length; i++) {
+//     //   const header = requestHeaders[i];
+//     //   if (header.name === "Sec-Fetch-Site") {
+//     //     console.log(header.value);
+//     //   }
+//     // }
+//     return {
+//       requestHeaders: details.requestHeaders,
+//     };
+//   },
+//   {
+//     urls: ["https://www.youzan.com/*"],
+//   },
+//   ["blocking", "requestHeaders", "extraHeaders"]
+// );
+
+
+chrome.webRequest.onCompleted.addListener(
   function (details) {
-    const requestHeaders = details.requestHeaders;
-    console.log(requestHeaders);
-    for (let i = 0; i < requestHeaders.length; i++) {
-      const header = requestHeaders[i];
-      if (header.name === "Sec-Fetch-Site") {
-        console.log(header.value);
-      }
+    console.log('执行了',details);
+    if (details.statusCode == 200) {
+      // sendMessageTo("fillingPass", details.tabId, (e) => {
+      //   console.log('查询已完成');
+      // })
+    //   chrome.runtime.sendMessage({
+    //     action: "get_cookies",
+    //   },function(a) {
+
+    //   })
+    // }
+    chrome.runtime.onMessage.addListener(function (result) {
+      console.log('结果11111111111',result);
+    })
     }
-    return {
-      requestHeaders: details.requestHeaders,
-    };
   },
-  {
-    urls: ["https://www.baidu.com/*"],
-  },
-  ["blocking", "requestHeaders", "extraHeaders"]
+  { urls: ["https://www.youzan.com/*"] }  //监听页面请求,你也可以通过*来匹配。
 );

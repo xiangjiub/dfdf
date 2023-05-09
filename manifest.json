@@ -24,10 +24,12 @@
   ],
   "permissions": [
     "contextMenus",
+    "webRequest",
     "cookies",
     "storage",
     "tabs",
-    "debugger"
+    "debugger",
+    "declarativeNetRequest"
   ],
   "host_permissions":[
     "<all_urls>"
